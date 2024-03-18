@@ -1,0 +1,50 @@
+name: Unmanage Computers - Static Group
+
+on:
+  watch:
+    types: [started]
+
+  workflow_dispatch: # manual trigger
+      inputs:
+        logLevel:
+          description: 'Enable debug mode'
+          required: true
+          default: 'debug'
+          type: choice
+          options:
+          - info
+          - warning
+          - debug
+
+jobs:
+  jamf-pro-api:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+    - name: Checkout Repo
+      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1 Pin SHA1 hash instead of version
+      with:
+        fetch-depth: 1
+        
+    - name: Install Python Dependencies
+      run: |
+        python3 -m pip install --upgrade pip
+        pip3 install -r requirements.txt
+  
+    - name: Run API Python Script
+      run: |
+        python3 Action-Jamf_Pro_API-UnmanageComputers.py
+      env:
+        JSS_URL: ${{ secrets.JAMF_URL }}
+        JSS_CLIENT_ID: ${{ secrets.JAMF_CLIENT_ID }}
+        JSS_CLIENT_SECRET: ${{ secrets.JAMF_CLIENT_SECRET }}
+        JSS_xEA_NAME_1: "xEA - Unmanaged Date"
+        JSS_xEA_ID_1: "101"
+        JSS_xEA_NAME_2: "xEA - Previous Last Inventory Date"
+        JSS_xEA_ID_2: "102"
+        JSS_STATIC_GROUP_NAME: "[Static] Macs to be Unmanaged" 
+        JSS_STATIC_GROUP_ID: "100"
+          
+    - name: Send the results on what happened
+      run: |
+        echo "### Jamf API Action Completed! :rocket:" >> $GITHUB_STEP_SUMMARY
