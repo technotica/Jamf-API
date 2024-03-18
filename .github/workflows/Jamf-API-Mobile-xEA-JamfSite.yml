@@ -1,0 +1,45 @@
+name: Mobile xEA - Jamf Site
+
+on:
+  watch:
+    types: [started]
+  workflow_dispatch: # manual trigger
+      inputs:
+        logLevel:
+          description: 'Enable debug mode'
+          required: true
+          default: 'debug'
+          type: choice
+          options:
+          - info
+          - warning
+          - debug
+
+jobs:
+  jamf-pro-api:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+    - name: Checkout Repo
+      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1 Pin SHA1 hash instead of version
+      with:
+        fetch-depth: 1
+        
+    - name: Install Python Dependencies
+      run: |
+        python3 -m pip install --upgrade pip
+        pip3 install -r requirements.txt
+  
+    - name: Run API Python Script
+      run: |
+        python3 Action-Jamf_Pro_API_Update_Mobile_xEA-Jamf-Site.py
+      env:
+        JSS_URL: ${{ secrets.JAMF_URL }}
+        JSS_CLIENT_ID: ${{ secrets.JAMF_CLIENT_ID }}
+        JSS_CLIENT_SECRET: ${{ secrets.ITS_JAMF_JSS_PROD_CLIENT_SECRET }}
+        JSS_xEA_NAME: "Mobile Testing - Jamf Site"
+        JSS_xEA_ID: "1"
+          
+    - name: Send the results on what happened
+      run: |
+        echo "### Jamf API Action Completed! :rocket:" >> $GITHUB_STEP_SUMMARY
