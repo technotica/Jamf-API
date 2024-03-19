@@ -3,16 +3,20 @@ A collection of Jamf API things I've written or adapted. A blog post with additi
 
 Since Jamf Pro 10.49 it is not possible to unmanage Macs by using Mass Action in the Jamf UI. Instead, the Python script Action-Jamf_Pro_API-UnmanageComputers.py utilizes the Jamf Pro API to perform an unmanage of a static group of Macs.
 
+If you use this script to unmanage Macs, be aware that on the Macs it sets to be unmanaged it will also update the Last Inventory Date of that Mac to when the management status was set. This is a known issue with the Jamf Classic API as documented in this feature request from 2015 [JN-I-22670](https://ideas.jamf.com/ideas/JN-I-22670). Unfortunately, I could not find a Jamf Pro API method to set the management status of a Mac, so this script utilizes the Jamf Classic API to unmanage a Mac. The newer Jamf Pro API does not update the Last Inventory Date thankfully.
+
 In addition, there are 2 other scripts Action-Jamf_Pro_API-Update_xEA-Jamf-Site.py and Action-Jamf_Pro_API_Update_Mobile_xEA-Jamf-Site.py that set an extension attribute for each Mac and Mobile Device with that device's Jamf site. As Jamf doesn't allow Jamf Site to be used as a search criteria for smart groups or saved searches by default, these scripts make site information available via an extension attribute. 
 
 # Using these scripts
-These scripts are expected to be run in a CI environment (GitHub Actions) so certain secret values can be passed from the CI
+These scripts are expected to be run in a CI/CD environment like GitHub Actions, AWS, or CircleCI, etc. so certain secret values can be passed.
 This requires the installation of the [JPS-API-Wrapper](https://gitlab.com/cvtc/appleatcvtc/jps-api-wrapper )
 
 These scripts will allow you to do the following:
 - Set Computer Extension Attribute Jamf Site 
 - Set Mobile Device Extension Attribute Jamf Site 
 - Unmanage a Static Group of Computers
+
+If you don't want to use CI/CD you can just edit the scripts and hardcode or set prompts for requesting Jamf API credentials. 
 
 ## Setup
 Clone this repository.
