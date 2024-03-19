@@ -37,7 +37,7 @@ jobs:
         JSS_URL: ${{ secrets.JAMF_URL }}
         JSS_CLIENT_ID: ${{ secrets.JAMF_CLIENT_ID }}
         JSS_CLIENT_SECRET: ${{ secrets.ITS_JAMF_JSS_PROD_CLIENT_SECRET }}
-        JSS_xEA_NAME: "Mobile Testing - Jamf Site"
+        JSS_xEA_NAME: "xEA Mobile - Jamf Site"
         JSS_xEA_ID: "1"
           
     - name: Send the results on what happened
