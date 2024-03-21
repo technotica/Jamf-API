@@ -37,10 +37,10 @@ Use Jamf's documentation to configure [https://learn.jamf.com/bundle/jamf-pro-do
 - Read Static Computer Groups
 - Update User
 
-Copy the client ID and client credentials for later use. You can separate out the API roles and clients if you wish. Create them as Text fields and Inventory Display to General.
+Copy the client ID and client credentials for later use. You can separate out the API roles and clients if you wish.
 
 ### Create Computer Extension Attributes
-In the Jamf Pro UI, create the following extension attributes. You can name them whatever you like.
+In the Jamf Pro UI, create the following extension attributes. You can name them whatever you like. Be sure to set them as Text fields and Inventory Display to General.
 
 #### Unmanage Computers
 Also set the Data Type to Date (YYYY-MM-DD hh:mm:ss)
@@ -79,6 +79,8 @@ When ready and you've tested extensively, click Actions in your repository. Then
 
 ## Future Work
 The current unmanage script does take some time to run, about 4 hours for ~700 Macs. Using some of the concurrent API functions, this time could be potentially reduced. 
+
+We also have a need for unmanaging Mobile Devices, so a Python script will be added soon for that.
 
 The summary step in the workflow file that doesn’t appear to do anything.  My original concept was to have the output of the Python script go in the [GitHub Job Summary](https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#adding-a-job-summar) that would be suitable for export or a way to see what the Unmanage workflow did at a glance. I couldn’t get the output from the underlying Python script to get into GitHub Actions. I'd love to hear from you if anyone has ideas on accomplishing this.
 
