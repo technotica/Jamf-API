@@ -17,12 +17,12 @@ For Mobile Devices, you can use [Action-Jamf_Pro_API-UnmanageMobileDevices.py](h
 [Action-Jamf_Pro_API-Update_xEA-Jamf-Site.py](https://github.com/technotica/Jamf-API/blob/main/Action-Jamf_Pro_API-Update_xEA-Jamf-Site.py) and [Action-Jamf_Pro_API_Update_Mobile_xEA-Jamf-Site.py](https://github.com/technotica/Jamf-API/blob/main/Action-Jamf_Pro_API_Update_Mobile_xEA-Jamf-Site.py), set an extension attribute for each Mac and Mobile Device with that device's Jamf site. As Jamf doesn't allow Jamf Site to be used as a search criteria for smart groups or saved searches by default, these scripts make site information available via an extension attribute. 
 
 ## Extension Attribute - macOS Latest Supported
-The script Action-Jamf_Pro_API-Update_xEA-macOS_Latest_Supported.py, sets an extension attribute for each Mac in Jamf with its latest supported macOS. It utilizes regex to compare the Mac's Model Identifier and spits out the latest supported macOS for that Mac. The regex has been helpfully compiled by [talkingmoose](https://gist.github.com/talkingmoose).
+The script Action-Jamf_Pro_API-Update_xEA-macOS_Latest_Supported.py, sets an extension attribute for each Mac in Jamf with its latest supported macOS. It utilizes regex to compare the Mac's Model Identifier and spits out the latest supported macOS for that Mac. The regex has been helpfully compiled and updated by [TalkingMoose](https://gist.github.com/talkingmoose).
 
-[macOS 14 Sonoma](https://gist.github.com/talkingmoose/1b852e5d4fc8e76b4400ca2e4b3f3ad0) 
-[macOS 13 Ventura](https://gist.github.com/talkingmoose/3100dab934baa13a799ba29be62ca357)
-[macOS 12 Monterey](https://gist.github.com/talkingmoose/74731895981b14da4ce1d524eeebdf1d)
-[macOS 11 Big Sur](https://gist.github.com/talkingmoose/794f7647e7a29d6ef74f8b9233dd44bb)
+- [macOS 14 Sonoma](https://gist.github.com/talkingmoose/1b852e5d4fc8e76b4400ca2e4b3f3ad0) 
+- [macOS 13 Ventura](https://gist.github.com/talkingmoose/3100dab934baa13a799ba29be62ca357)
+- [macOS 12 Monterey](https://gist.github.com/talkingmoose/74731895981b14da4ce1d524eeebdf1d)
+- [macOS 11 Big Sur](https://gist.github.com/talkingmoose/794f7647e7a29d6ef74f8b9233dd44bb)
 
 # Using these scripts
 These scripts are expected to be run in a CI/CD environment like GitHub Actions, AWS, or CircleCI, etc. so certain secret values can be passed.
