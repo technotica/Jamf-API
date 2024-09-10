@@ -19,12 +19,13 @@ For Mobile Devices, you can use [Action-Jamf_Pro_API-UnmanageMobileDevices.py](h
 ## Extension Attribute - macOS Latest Supported
 The script Action-Jamf_Pro_API-Update_xEA-macOS_Latest_Supported.py, sets an extension attribute for each Mac in Jamf with its latest supported macOS. It utilizes regex to compare the Mac's Model Identifier and spits out the latest supported macOS for that Mac. The regex has been helpfully compiled and updated by [TalkingMoose](https://gist.github.com/talkingmoose).
 
+- [macOS 15 Sequoia](https://gist.github.com/talkingmoose/da84016836b29f125dad78414d0a4413)
 - [macOS 14 Sonoma](https://gist.github.com/talkingmoose/1b852e5d4fc8e76b4400ca2e4b3f3ad0) 
 - [macOS 13 Ventura](https://gist.github.com/talkingmoose/3100dab934baa13a799ba29be62ca357)
 - [macOS 12 Monterey](https://gist.github.com/talkingmoose/74731895981b14da4ce1d524eeebdf1d)
 - [macOS 11 Big Sur](https://gist.github.com/talkingmoose/794f7647e7a29d6ef74f8b9233dd44bb)
 
-# Using these scripts
+# Using These Scripts
 These scripts are expected to be run in a CI/CD environment like GitHub Actions, AWS, or CircleCI, etc. so certain secret values can be passed.
 This requires the installation of the [JPS-API-Wrapper](https://gitlab.com/cvtc/appleatcvtc/jps-api-wrapper)
 

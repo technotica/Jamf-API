@@ -10,9 +10,9 @@ Latest supported macOS if the latest supported macOS has changed or is blank.
 This is expected to be run in a CI environment (GitHub Actions) so certain secret values can be passed from the CI
 This requires the installation of the JPS-API-Wrapper: https://gitlab.com/cvtc/appleatcvtc/jps-api-wrapper
 
-Version 0.1
+Version 0.5
 Jennifer Johnson 
-03/22/24
+09/10/24
 """
 
 from jps_api_wrapper.classic import Classic
@@ -54,8 +54,19 @@ def macOSCompatibility(model):
     # Get the latest supported version of macOS based on Regex query. 
     macOS_compatible = ""
     while not macOS_compatible:
-        # Does Mac Model Identifier support macOS Sonoma?
-        macOS_Sonoma_Regex = re.compile(r'(^(Mac(1[3-9]|BookPro1[5-8]|BookAir([89]|10)|Pro[7-9]|Book\d{2,})|iMac(Pro\d+|(19|[2-9]\d))|Macmini[89]),\d+$)')
+        # Jamf reports modelIdentifier as "null" if it is blank
+        if model is None:
+            macOS_compatible = "Model Identifier Not Found"
+            return macOS_compatible
+        
+        # Does Mac Model Identifier support macOS Sequoia?
+        macOS_Sequoia_Regex = re.compile(r'(^(Mac(1[3-9]|BookPro1[5-8]|BookAir(9|10)|Pro[7-9])|iMac(Pro\d+|(19|[2-9]\d))|Macmini[89]),\d+$)')
+        macOS_Sequoia = macOS_Sequoia_Regex.search(model)
+        if macOS_Sequoia:
+            macOS_compatible = "macOS 15 Sequoia"
+            return macOS_compatible
+        
+        macOS_Sonoma_Regex = re.compile(r'(^(Mac(1[345]|BookPro1[5-8]|BookAir([89]|10)|Pro7)|iMac(Pro1|(19|2[01]))|Macmini[89]),\d+$)')
         macOS_Sonoma = macOS_Sonoma_Regex.search(model)
         if macOS_Sonoma:
             macOS_compatible = "macOS 14 Sonoma"
@@ -84,9 +95,9 @@ def macOSCompatibility(model):
         if macOS_Virtual:
             macOS_compatible = "Virtual Mac"
             return macOS_compatible
-        
-        if not all((macOS_Sonoma, macOS_Ventura, macOS_Monterey, macOS_BigSur, macOS_Virtual)):
-            macOS_compatible = "Too Old or Unknown"
+                
+        if not all((macOS_Sequoia, macOS_Sonoma, macOS_Ventura, macOS_Monterey, macOS_BigSur, macOS_Virtual)):
+            macOS_compatible = "macOS 10.15 Catalina or older"
             return macOS_compatible 
 
 def main():
@@ -102,13 +113,12 @@ def main():
         computer_name = computer["name"]
         # Get details from the General subset about the Computer ID
         current = pro.get_computer_inventory_detail(id=device_id)
-        #current = pro.get_computer_inventory(id=device_id,section=["HARDWARE"])
         # Get the Model Identifier for this computer 
         model_identifier = current["hardware"]["modelIdentifier"]  
              
-        # Get the current value of xEA - macOS Compatibility for this computer
+        # Get the current value of xEA - macOS Latest Supported for this computer
         # Since its a list of dictionary values, we have to look for the right extension attribute to get its value
-        for extensionAttributes in current["general"]["extensionAttributes"]:
+        for extensionAttributes in current["operatingSystem"]["extensionAttributes"]:
             if xEA_id in extensionAttributes["definitionId"]:
                 current_xEA_macOS_compatible = str(extensionAttributes["values"])
                 # Do some text formatting to get rid of extra brackets and quotes
@@ -117,7 +127,8 @@ def main():
         macOS_compatible_status = macOSCompatibility(model_identifier)
 
         # Only update xEA - macOS Latest Supported if the the latest supported macOS has changed
-        if macOS_compatible_status != current_xEA_macOS_compatible:
+        # If for some reason the Jamf Computer ID exists but the record is inaccessible, don't try to update
+        if macOS_compatible_status != current_xEA_macOS_compatible and current is not None:
             # Set the JSON payload to be uploaded to Jamf, e.g. set the xEA - macOS Latest Supported value
             try:
                 message = f"{macOS_compatible_status}"
