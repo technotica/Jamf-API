@@ -11,10 +11,14 @@ the site name has changed or is blank.
 This is expected to be run in a CI environment (GitHub Actions) so certain secret values can be passed from the CI
 This requires the installation of the JPS-API-Wrapper: https://gitlab.com/cvtc/appleatcvtc/jps-api-wrapper
 
+Version 0.4
+Jennifer Johnson 
+03/26/25
 """
 
 from jps_api_wrapper.classic import Classic
 from jps_api_wrapper.pro import Pro
+from jps_api_wrapper.request_builder import ClientError 
 import logging
 import os
 import requests
@@ -46,6 +50,13 @@ port="8443"
 # Set the Extension Attribute Name and ID
 xEA_name = os.environ.get("JAMF_xEA_NAME")
 xEA_id = os.environ.get("JAMF_xEA_ID")
+
+# Handle logging to GitHub Actions as a summary
+def log_to_github_summary(message):
+    summary_file = os.getenv("GITHUB_STEP_SUMMARY")
+    if summary_file:
+        with open(summary_file, "a") as f:
+            f.write(f"{message}\n")
 
 def main():
     classic = Classic(JSS_URL, CLIENT_ID, CLIENT_SECRET, client=True)
@@ -86,12 +97,21 @@ def main():
                         ]
                     }, device_id)
                 # Format a text string of the results
-                site_output=f"JSS ID: {device_id}, Computer Name: {device_name}, Extension Attribute: {xEA_name}, Value: {site_name}, {xEA_name} Previous Value: {current_xEA_site_name}"
+                site_output=f"JSS ID: {device_id}, Mobile Device Name: {device_name}, Extension Attribute: {xEA_name}, Value: {site_name}, {xEA_name} Previous Value: {current_xEA_site_name}"
                 # Export the results to GitHub environment so it can be added to the summary page
                 print(f"{site_output}")
+            
+            except ClientError as err:
+                print(f"Client Error for ID: {device_id}")
+                print(err)  # Optionally: print(err.response.json()) if you want exact error
+                msg = f"❌ Skipped device `{device_id}` – `{err}`"
+                log_to_github_summary(msg)
+
             except requests.exceptions.HTTPError as err:
                 print(f"HTTP Error for ID: {device_id}")
-                print(err.args[0])
+                print(err)
+                msg = f"🔥 Unexpected error on device `{device_id}` – `{err}`"
+                log_to_github_summary(msg)
 
 if __name__ == '__main__':
     main()
